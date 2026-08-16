@@ -46,40 +46,66 @@ def evaluate_answer(question, reference_answer, user_answer, max_marks=10):
     prompt = (
         f"You are an expert Senior Staff Engineer and a friendly, empathetic technical interviewer. "
         f"Your task is to evaluate a candidate's answer to an interview question.\n\n"
+
         f"Question: {question}\n"
         f"Reference Answer: {reference_answer}\n"
         f"Candidate's Answer: {user_answer}\n\n"
+
         f"Instructions:\n"
-        f"1. Evaluate the candidate's answer against the reference answer. Check for accuracy and depth.\n"
-        f"2. Write a brief, conversational response (1-3 sentences) addressed directly to the candidate. "
-        f"Validate what they got right, gently correct major misconceptions, or fill in critical gaps naturally. "
-        f"Do not sound robotic.\n"
-        f"3. Assign a strict integer score from 0 to {max_marks} based on this rubric:\n"
-        f"   - 0: Gibberish, completely wrong, or evading the question.\n"
-        f"   - 1-3: Severe misconceptions or very vague.\n"
-        f"   - 4-6: Touches on the right idea but misses core details or contains partial errors.\n"
-        f"   - 7-8: Solid understanding, mostly correct, missing only minor details.\n"
-        f"   - 9-10: Exceptional, highly accurate, and complete.\n\n"
+        f"1. First determine whether the candidate actually answered the specific question being asked.\n"
+        f"2. The answer must be relevant to the exact concept, class, algorithm, problem, or topic in the question.\n"
+        f"3. If the candidate discusses a different topic, class, algorithm, or concept, do NOT give a high score, "
+        f"even if the information provided is technically correct.\n"
+        f"4. A completely off-topic answer should normally receive 0-2 marks.\n"
+        f"5. If the answer is relevant, carefully evaluate the technical claims for factual correctness.\n"
+        f"6. Before assigning marks, identify the important factual claims made by the candidate.\n"
+        f"7. Check each important technical claim against your own technical knowledge and the reference answer.\n"
+        f"8. Distinguish clearly between correct concepts, missing concepts, and incorrect technical claims.\n"
+        f"9. A technically incorrect claim must reduce the score even if the answer is detailed, fluent, or confident.\n"
+        f"10. Multiple major technical errors must prevent a high score.\n"
+        f"11. Do NOT give 9-10 marks to an answer containing major factual misconceptions.\n"
+        f"12. Correct statements that go beyond the reference answer should receive credit and should NOT reduce the score.\n"
+        f"13. The candidate does NOT need to use the same wording as the reference answer.\n"
+        f"14. Accept technically correct explanations that use different wording, terminology, examples, formulas, "
+        f"or structure.\n"
+        f"15. Do not penalize an answer simply because it is more detailed than the reference answer.\n"
+        f"16. Do not award marks merely because the answer is long. Judge the technical content.\n"
+        f"17. Write a brief, conversational response of 1-3 sentences addressed directly to the candidate. "
+        f"Validate correct points, gently correct important misconceptions, and mention important missing concepts when appropriate.\n\n"
+
+        f"Scoring:\n"
+        f"18. Evaluate the answer using these four dimensions:\n"
+        f"   - Relevance: 0-2 marks. Does the answer directly address the specific question?\n"
+        f"   - Technical correctness: 0-4 marks. Are the important technical claims correct?\n"
+        f"   - Completeness: 0-2 marks. Does the answer cover the essential concepts required by the question?\n"
+        f"   - Clarity: 0-2 marks. Is the explanation clear and understandable?\n"
+        f"   Add these four values to obtain the final score out of 10.\n\n"
+
+        f"19. If the answer is completely off-topic, normally give 0-2 marks.\n"
+        f"20. If the answer is relevant but contains major technical misconceptions, normally give no more than 5 marks.\n"
+        f"21. If the answer is relevant, mostly correct, but has important omissions or minor errors, give partial credit.\n"
+        f"22. An answer should receive 9-10 marks only when it is relevant, technically accurate, and substantially complete.\n"
+        f"23. Correct additional information must not reduce the score.\n"
+        f"24. Do not confuse confidence, length, or detail with correctness.\n\n"
+
         f"You MUST format your output EXACTLY using these XML tags. Do not output anything else:\n"
         f"<feedback>Your conversational response here.</feedback>\n"
         f"<score>Your integer score here</score>\n\n"
+
         f"Output:\n"
     )
-    
     inputs = tokenizer(prompt, return_tensors="pt")
     
     # Generate parameters tuned for a balance of strict formatting and natural language
     with torch.no_grad():
         outputs = model.generate(
-            **inputs, 
-            max_new_tokens=150, 
-            do_sample=True,
-            temperature=0.2,  # Low temp keeps the structure rigid but allows natural phrasing
-            top_p=0.9,
-            repetition_penalty=1.1
+            **inputs,
+            max_new_tokens=150,
+            do_sample=False,
         )
     
     response = tokenizer.decode(outputs[0][inputs.input_ids.shape[1]:], skip_special_tokens=True).strip()
+   
     
     # -- Robust Regex Parsing --
     feedback_match = re.search(r'<feedback>(.*?)</feedback>', response, re.IGNORECASE | re.DOTALL)
@@ -96,9 +122,11 @@ def evaluate_answer(question, reference_answer, user_answer, max_marks=10):
         raw_score = int(score_match.group(1))
         final_score = min(max(raw_score, 0), max_marks)
     else:
-        # Fallback heuristic if tags fail
-        if len(clean_answer.split()) > 10:
-            final_score = 5 # Give partial credit if they wrote a lot but model failed to parse
+        final_score = 0
+        feedback_text = (
+            "I couldn't reliably evaluate that answer. "
+            "Let's move to the next question."
+        )
         
     return final_score, feedback_text
 
