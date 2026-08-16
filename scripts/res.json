@@ -1,0 +1,54 @@
+{
+  "Aiman1234/Interview-questions": {
+    "rows": 496,
+    "cols": [
+      "Number",
+      "language",
+      " level ",
+      "Questions",
+      "Answers",
+      "Unnamed: 5"
+    ],
+    "sample": {
+      "Number": "1",
+      "language": "Java",
+      " level ": "Easy",
+      "Questions": "What is Java?",
+      "Answers": "Java is a high-level, class-based, object-oriented programmi",
+      "Unnamed: 5": "None"
+    }
+  },
+  "K-areem/AI-Interview-Questions": {
+    "rows": 4653,
+    "cols": [
+      "text"
+    ],
+    "sample": {
+      "text": "<s>[INST] In what way does UML facilitate the specification "
+    }
+  },
+  "Shreyash23/interview": {
+    "rows": 523,
+    "cols": [
+      "instruction",
+      "input",
+      "output"
+    ],
+    "sample": {
+      "instruction": "machine learning interview question",
+      "input": "None",
+      "output": "Is it possible to use KNN for image processing?"
+    }
+  },
+  "ali-alkhars/interviews": {
+    "rows": 2292,
+    "cols": [
+      "input",
+      "response"
+    ],
+    "sample": {
+      "input": "General interview question",
+      "response": "Why should we hire you?"
+    }
+  }
+}

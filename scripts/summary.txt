@@ -1,0 +1,4 @@
+OK|Aiman1234/Interview-questions|496|['Number', 'language', ' level ', 'Questions', 'Answers', 'Unnamed: 5']|[('Number', '1'), ('language', 'Java'), (' level ', 'Easy'), ('Questions', 'What is Java?'), ('Answers', 'Java is a high-level, class-based, object-oriented programming language.'), ('Unnamed: 5', 'None')]
+OK|K-areem/AI-Interview-Questions|4653|['text']|[('text', '<s>[INST] In what way does UML facilitate the specification in the analysis, des')]
+OK|Shreyash23/interview|523|['instruction', 'input', 'output']|[('instruction', 'machine learning interview question'), ('input', 'None'), ('output', 'Is it possible to use KNN for image processing?')]
+OK|ali-alkhars/interviews|2292|['input', 'response']|[('input', 'General interview question'), ('response', 'Why should we hire you?')]

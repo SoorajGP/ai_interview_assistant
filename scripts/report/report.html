@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adaptive LLM Interview System — Model Performance Report</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    background: #f4f6f9;
+    color: #1a1a2e;
+  }
+  .cover {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+    color: white;
+    padding: 60px 80px;
+    min-height: 220px;
+  }
+  .cover h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 8px; }
+  .cover .subtitle { font-size: 1rem; opacity: 0.8; margin-bottom: 4px; }
+  .cover .date { font-size: 0.85rem; opacity: 0.6; margin-top: 16px; }
+  .container { max-width: 1050px; margin: 40px auto; padding: 0 32px 80px; }
+  section {
+    background: white;
+    border-radius: 10px;
+    padding: 36px 40px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  h2 {
+    font-size: 1.35rem;
+    color: #0f3460;
+    border-left: 4px solid #0f3460;
+    padding-left: 12px;
+    margin-bottom: 20px;
+  }
+  h3 { font-size: 1.05rem; color: #16213e; margin: 20px 0 8px; }
+  p { margin-bottom: 12px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 20px;
+    font-size: 0.92rem;
+  }
+  th {
+    background: #0f3460;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td { padding: 9px 14px; border-bottom: 1px solid #e8eaf0; }
+  tr:nth-child(even) td { background: #f7f9fc; }
+  figure {
+    margin: 24px 0;
+    text-align: center;
+  }
+  figure img {
+    max-width: 100%;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  }
+  figcaption {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .metric-card {
+    background: linear-gradient(135deg, #0f3460, #1a1a8c);
+    border-radius: 8px;
+    padding: 20px 16px;
+    text-align: center;
+    color: white;
+  }
+  .metric-val {
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .metric-lbl {
+    font-size: 0.78rem;
+    opacity: 0.85;
+    line-height: 1.3;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  code {
+    background: #eef2ff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.88em;
+    font-family: "Courier New", monospace;
+  }
+  .note {
+    background: #fff8e1;
+    border-left: 4px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.9rem;
+    color: #6b4f00;
+    margin: 14px 0;
+  }
+  .tag {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #1a56db;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.82rem;
+    font-family: monospace;
+    margin: 2px;
+  }
+  blockquote {
+    border-left: 3px solid #c7d2fe;
+    padding: 4px 16px;
+    color: #444;
+    font-style: italic;
+    margin: 12px 0;
+  }
+  @media print {
+    body { background: white; font-size: 13px; }
+    .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    section { box-shadow: none; border: 1px solid #ddd; }
+    .metric-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="subtitle">Research Report &nbsp;|&nbsp; Internship Design Project 3 (IDP3)</div>
+  <h1>Adaptive LLM Interview System<br>Performance Evaluation</h1>
+  <div class="subtitle">Fine-tuned Qwen1.5-1.8B with LoRA &mdash; Scoring Model Analysis</div>
+  <div class="date">Generated: 2026-08-03 &nbsp;&bull;&nbsp; Full Evaluation (Static + Model Inference)</div>
+</div>
+
+<div class="container">
+
+  <!-- EXECUTIVE SUMMARY -->
+  <section>
+    <h2>Executive Summary</h2>
+    <p>
+      This report evaluates the <strong>Adaptive LLM Interview System</strong>, which uses a
+      LoRA-fine-tuned <strong>Qwen1.5-1.8B</strong> language model to score candidate answers
+      during a simulated technical interview. The system adapts difficulty based on cumulative
+      performance across three structured phases: Easy, Medium, and Hard.
+    </p>
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="metric-val">6,124</div>
+        <div class="metric-lbl">Total Questions in Dataset</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">4,640</div>
+        <div class="metric-lbl">Unique Question Concepts</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">12.60 MB</div>
+        <div class="metric-lbl">LoRA Adapter Size</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val">0.171%</div>
+        <div class="metric-lbl">Trainable Parameters<br>(of Total)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 1: DATASET -->
+  <section>
+    <h2>1. Dataset Analysis</h2>
+    <div class="two-col">
+      <div>
+        <h3>By Domain</h3>
+        <table>
+          <thead><tr><th>Domain</th><th>Rows</th></tr></thead>
+          <tbody><tr><td>AI/ML</td><td>1033</td></tr><tr><td>Behavioral</td><td>435</td></tr><tr><td>Core CS & OS</td><td>3975</td></tr><tr><td>Data Structures & Algorithms</td><td>681</td></tr></tbody>
+        </table>
+      </div>
+      <div>
+        <h3>By Difficulty</h3>
+        <table>
+          <thead><tr><th>Difficulty</th><th>Rows</th></tr></thead>
+          <tbody><tr><td>Easy</td><td>460</td></tr><tr><td>Medium</td><td>5374</td></tr><tr><td>Hard</td><td>290</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <figure><img src="fig_dataset_distribution.png" alt="Question count by domain and difficulty level"><figcaption>Figure: Question count by domain and difficulty level</figcaption></figure>
+    <p>
+      The dataset combines the original hand-crafted <em>LLM_Interview_Dataset-v2</em>
+      with three open-source Hugging Face corpora
+      (<code>Aiman1234/Interview-questions</code>,
+       <code>K-areem/AI-Interview-Questions</code>,
+       <code>Shreyash23/interview</code>),
+      resulting in <strong>6,124 total rows</strong> and
+      <strong>4,640 unique question concepts</strong>.
+      Domain assignment used keyword-frequency matching across 4 categories;
+      difficulty labels from source datasets were preserved where available.
+    </p>
+  </section>
+
+  <!-- SECTION 1b: ARCHITECTURE -->
+  <section>
+    <h2>1b. Model Architecture &amp; Parameter Efficiency</h2>
+    <table>
+      <thead><tr><th>Attribute</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Base Model</td><td><code>Qwen/Qwen1.5-1.8B</code></td></tr>
+        <tr><td>Adapter Type</td><td>LORA (Parameter-Efficient Fine-Tuning)</td></tr>
+        <tr><td>LoRA Rank (<em>r</em>)</td><td>16</td></tr>
+        <tr><td>LoRA Alpha</td><td>32 &rarr; scaling factor 2.0</td></tr>
+        <tr><td>Dropout</td><td>0.0</td></tr>
+        <tr><td>Target Modules</td><td>
+          <span class="tag">v_proj</span><span class="tag">q_proj</span>
+        </td></tr>
+        <tr><td>Transformer Layers</td><td>24</td></tr>
+        <tr><td>Total Base Parameters</td><td>1840M</td></tr>
+        <tr><td>Trainable LoRA Parameters</td><td>3.15M (0.171%)</td></tr>
+        <tr><td>Adapter File Size</td><td>12.60 MB (vs ~3.50 GB base)</td></tr>
+      </tbody>
+    </table>
+    <div class="two-col">
+      <figure><img src="fig_lora_efficiency.png" alt="Trainable vs. frozen parameters (log scale)"><figcaption>Figure: Trainable vs. frozen parameters (log scale)</figcaption></figure>
+      <figure><img src="fig_model_selection.png" alt="Model selection: parameter count vs. CPU suitability score"><figcaption>Figure: Model selection: parameter count vs. CPU suitability score</figcaption></figure>
+    </div>
+    <p>
+      Using LoRA with <em>r</em>=16 targets a rank-to-dimension ratio of
+      <strong>16/2048 = 0.78%</strong> per attention layer, acting only on
+      <code>q_proj</code> and <code>v_proj</code> — the projections most
+      directly responsible for attention pattern specialisation.
+      The alpha/r scaling factor of <strong>2.0</strong> is a standard practice that
+      ensures stable gradient flow without excessive adaptation noise.
+    </p>
+  </section>
+
+  <!-- SECTION 1c: TRAINING -->
+  <section>
+    <h2>1c. Training Dynamics</h2>
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Epochs</td><td>3</td></tr>
+        <tr><td>Total Training Steps</td><td>2,250</td></tr>
+        <tr><td>Initial Cross-Entropy Loss</td><td>2.7462</td></tr>
+        <tr><td>Final Cross-Entropy Loss</td><td>0.1268</td></tr>
+        <tr><td>Total Loss Reduction</td><td>95.4%</td></tr>
+        <tr><td>Approx. Convergence Step</td><td>~400</td></tr>
+        <tr><td>Training Duration</td><td>~28 minutes (Google Colab A100)</td></tr>
+        <tr><td>Dataset Size</td><td>1,500 examples (original pre-expansion)</td></tr>
+      </tbody>
+    </table>
+    <figure><img src="fig_training_loss.png" alt="Cross-entropy loss curve across 3 training epochs"><figcaption>Figure: Cross-entropy loss curve across 3 training epochs</figcaption></figure>
+    <p>
+      The loss curve demonstrates healthy convergence: a steep initial drop in the
+      first epoch followed by smooth refinement. The loss dropped
+      <strong>95.4%</strong> from
+      <strong>2.7462</strong> to <strong>0.1268</strong>,
+      indicating strong adaptation without signs of divergence or catastrophic forgetting.
+    </p>
+  </section>
+
+  <!-- SECTION 2: SCORING EVALUATION -->
+  
+        <section>
+          <h2>2. Scoring Evaluation — Gold-Standard Benchmark</h2>
+          <p>
+            Model scoring quality was evaluated against a curated set of
+            <strong>30 test cases</strong> across three answer tiers.
+            Each tier was assessed on Mean Absolute Error (MAE) against the tier
+            midpoint and correct-tier classification accuracy.
+          </p>
+          <table>
+            <thead>
+              <tr><th>Tier</th><th>Description</th><th>Expected Range</th>
+                  <th>Mean Assigned Score</th><th>MAE</th><th>Tier Accuracy</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Perfect (P)</td><td>Accurate, detailed paraphrase</td>
+                  <td>8–10</td><td>7.90</td>
+                  <td>1.10</td><td>90%</td></tr>
+              <tr><td>Partial (M)</td><td>Vague or incomplete answer</td>
+                  <td>4–7</td><td>6.90</td>
+                  <td>1.40</td><td>60%</td></tr>
+              <tr><td>Wrong (W)</td><td>Gibberish, empty, or irrelevant</td>
+                  <td>0–3</td><td>3.20</td>
+                  <td>3.40</td><td>60%</td></tr>
+            </tbody>
+          </table>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <div class="metric-val">1.97</div>
+              <div class="metric-lbl">Overall MAE</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">70.0%</div>
+              <div class="metric-lbl">Tier Classification Accuracy</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">996 ms</div>
+              <div class="metric-lbl">Median Inference Latency</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">1149 ms</div>
+              <div class="metric-lbl">95th Percentile Latency</div>
+            </div>
+          </div>
+          <figure><img src="fig_score_distribution.png" alt="Score distribution across gold-standard answer tiers"><figcaption>Figure: Score distribution across gold-standard answer tiers</figcaption></figure>
+          <figure><img src="fig_tier_accuracy.png" alt="Confusion matrix for 3-tier answer classification"><figcaption>Figure: Confusion matrix for 3-tier answer classification</figcaption></figure>
+          <figure><img src="fig_latency.png" alt="Inference latency distribution per answer tier"><figcaption>Figure: Inference latency distribution per answer tier</figcaption></figure>
+        </section>
+        
+
+  <!-- SECTION 3: JUSTIFICATION -->
+  <section>
+    <h2>3. Design Choice Justification</h2>
+    <h3>Why LoRA Fine-Tuning?</h3>
+    <blockquote>LoRA was chosen for parameter-efficient fine-tuning. With r=16 and alpha=32 (scaling factor 2.0), the adapter introduces only 0.17% of the base model's parameters while specialising both query and value attention projections for scoring behaviour.</blockquote>
+    <h3>Why Qwen1.5-1.8B?</h3>
+    <blockquote>Qwen1.5-1.8B provides the best balance between language understanding capability and CPU-only inference feasibility. Larger models (7B+) exceed practical RAM limits on standard hardware; smaller models (<1B) lack sufficient reasoning depth for multi-concept scoring.</blockquote>
+    <h3>Scoring Guardrails</h3>
+    <blockquote>Three-tier guardrails (keyword detection -> length check -> LLM scoring) ensure fast, deterministic handling of trivial cases (empty, pass, don't know) without LLM overhead, reducing average latency for no-answer cases by ~98%.</blockquote>
+    <h3>Adaptive Difficulty Engine</h3>
+    <p>
+      The interview is structured into three mandatory phases:
+      <strong>Easy (5 questions)</strong> &rarr;
+      <strong>Medium (8 questions)</strong> &rarr;
+      <strong>Hard (5 questions, conditional on Medium avg &ge; 70%)</strong>.
+      This mirrors real-world technical screenings where initial warm-up questions
+      calibrate baseline competency before progressing to advanced topics.
+    </p>
+  </section>
+
+  <section>
+    <h2>Appendix: Reproducibility</h2>
+    <p>All metrics in this report are reproducible by running:</p>
+    <pre style="background:#f0f4ff;padding:14px;border-radius:6px;font-size:0.88rem;">
+# Static analysis (no model download required)
+python scripts/evaluate_model.py --static-only
+
+# Full evaluation (requires ~3.5 GB Qwen download on first run)
+python scripts/evaluate_model.py</pre>
+    <p>
+      Dataset: <code>data/LLM_Interview_Dataset-v2.csv</code> &nbsp;&bull;&nbsp;
+      Adapter: <code>models/fine_tuned_interviewer/</code> &nbsp;&bull;&nbsp;
+      Charts saved to: <code>scripts/report/</code>
+    </p>
+  </section>
+
+</div>
+</body>
+</html>
