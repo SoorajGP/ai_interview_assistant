@@ -1,0 +1,439 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    animation: fadeIn 200ms ease-out both;
+}
+
+/* ── Top bar ──────────────────────────────────────────── */
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    flex-shrink: 0;
+    height: 52px;
+}
+
+.topDomain {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    color: var(--text-sec);
+    text-transform: uppercase;
+}
+
+.topScore {
+    display: flex;
+    align-items: center;
+}
+
+.topScoreVal {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-sec);
+    letter-spacing: 0.08em;
+}
+
+/* ── Split view ────────────────────────────────────────── */
+.split {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Center rule */
+.centerRule {
+    width: 1px;
+    background: var(--border);
+    flex-shrink: 0;
+}
+
+/* ━━━━━━━━ CONTEXT PANE (Left) ━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.contextPane {
+    flex: 1;
+    padding: 36px 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* Phase tracker */
+.phaseTracker {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.difficultyRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.difficultyBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    padding: 4px 10px;
+    border: 1px solid;
+}
+
+.difficultyBadge[data-difficulty="easy"] {
+    color: var(--pass);
+    border-color: rgba(34, 197, 94, 0.35);
+    background: var(--pass-dim);
+}
+
+.difficultyBadge[data-difficulty="medium"] {
+    color: var(--signal);
+    border-color: rgba(245, 158, 11, 0.35);
+    background: var(--signal-dim);
+}
+
+.difficultyBadge[data-difficulty="hard"] {
+    color: var(--fail);
+    border-color: rgba(239, 68, 68, 0.35);
+    background: var(--fail-dim);
+}
+
+.difficultyDot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* Phase flow (EASY › MED › HARD) */
+.phaseFlow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.phaseStep {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    transition: color var(--transition);
+}
+
+.phaseStep[data-active="true"] {
+    color: var(--text-pri);
+}
+
+.phaseStep[data-done="true"] {
+    color: var(--text-dim);
+    text-decoration: line-through;
+}
+
+.phaseArrow {
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+/* Progress bar */
+.progressWrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progressTrack {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+}
+
+.progressFill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--signal);
+    transition: width 300ms ease;
+}
+
+.progressLabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    min-width: 32px;
+    text-align: right;
+}
+
+/* Q meta */
+.qMeta {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+.qTag {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--signal);
+    letter-spacing: 0.1em;
+}
+
+.qSep {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.qTotal {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+/* Question text */
+.questionText {
+    font-size: clamp(18px, 2.2vw, 24px);
+    font-weight: 400;
+    color: var(--text-pri);
+    line-height: 1.65;
+    letter-spacing: -0.01em;
+}
+
+/* Phase message */
+.phaseMsg {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--signal);
+    letter-spacing: 0.06em;
+    line-height: 1.6;
+    border-left: 2px solid var(--signal);
+    padding-left: 12px;
+}
+
+.phaseMsgDot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--signal);
+    margin-top: 5px;
+    flex-shrink: 0;
+    display: none;
+    /* dot replaced by border */
+}
+
+/* Phase limits legend */
+.phaseLimits {
+    display: flex;
+    gap: 20px;
+    margin-top: auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+}
+
+.limitItem {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    opacity: 0.35;
+    transition: opacity var(--transition);
+}
+
+.limitItem[data-active="true"] {
+    opacity: 1;
+}
+
+.limitLabel {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--text-sec);
+    text-transform: uppercase;
+}
+
+.limitVal {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-pri);
+}
+
+/* ━━━━━━━━ WORKSPACE PANE (Right) ━━━━━━━━━━━━━━━━━━━━━━ */
+.workspacePane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 36px 40px;
+    gap: 0;
+    overflow-y: auto;
+}
+
+.textareaWrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 200px;
+}
+
+.textarea {
+    flex: 1;
+    width: 100%;
+    background: transparent;
+    border: none;
+    resize: none;
+    color: var(--text-pri);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+    padding: 0;
+    padding-bottom: 24px;
+}
+
+.textarea::placeholder {
+    color: var(--text-dim);
+}
+
+.textarea:disabled {
+    opacity: 0.6;
+}
+
+.textareaHint {
+    position: absolute;
+    bottom: 8px;
+    right: 0;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+}
+
+/* Submit row */
+.submitRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.submitError {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fail);
+    flex: 1;
+}
+
+.submitBtn {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--text-pri);
+    border: 1px solid var(--border);
+    background: transparent;
+    padding: 10px 20px;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+    flex-shrink: 0;
+}
+
+.submitBtn:hover:not(:disabled) {
+    background: var(--surface);
+    border-color: var(--border-hi);
+}
+
+.submitBtn:disabled:not(.submitBtnLoading) {
+    opacity: 0.3;
+}
+
+.submitBtnLoading {
+    border-color: rgba(245, 158, 11, 0.35);
+    opacity: 1 !important;
+}
+
+.submitBtnLoadingText {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--signal);
+}
+
+.evalDot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--signal);
+}
+
+/* ── Evaluation block ──────────────────────────────────── */
+.evalBlock {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.evalDivider {
+    height: 1px;
+    background: var(--border);
+}
+
+.evalScore {
+    font-family: var(--mono);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.evalScoreSep {
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--border-hi);
+}
+
+.evalScoreMax {
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--text-dim);
+}
+
+.evalFeedback {
+    font-size: 14px;
+    color: var(--text-sec);
+    line-height: 1.7;
+    max-width: 480px;
+}
+
+.evalNext {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}

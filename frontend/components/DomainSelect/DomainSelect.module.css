@@ -1,0 +1,223 @@
+.root {
+    min-height: 100vh;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    animation: fadeIn 200ms ease-out both;
+}
+
+.inner {
+    width: 100%;
+    max-width: 680px;
+}
+
+/* Header */
+.header {
+    margin-bottom: 32px;
+}
+
+.chip {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--signal);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    padding: 4px 10px;
+    margin-bottom: 24px;
+}
+
+.title {
+    font-family: var(--mono);
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text-pri);
+    line-height: 1;
+    margin-bottom: 16px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--text-sec);
+    line-height: 1.65;
+    max-width: 480px;
+}
+
+/* Divider */
+.divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 8px;
+}
+
+/* Domain list */
+.listWrap {
+    min-height: 240px;
+}
+
+.list {
+    list-style: none;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    transition: background var(--transition);
+    outline: none;
+
+    /* Left accent bar */
+    padding-left: 16px;
+}
+
+.item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--signal);
+    transform: scaleY(0);
+    transition: transform var(--transition);
+    transform-origin: center;
+}
+
+.item:hover:not(.itemActive):not(.itemDimmed)::before,
+.item:focus-visible:not(.itemActive):not(.itemDimmed)::before {
+    transform: scaleY(1);
+}
+
+.item:hover:not(.itemActive):not(.itemDimmed) .itemName,
+.item:focus-visible:not(.itemActive):not(.itemDimmed) .itemName {
+    color: var(--text-pri);
+    transform: translateX(4px);
+}
+
+.item:hover:not(.itemActive):not(.itemDimmed) .itemArrow,
+.item:focus-visible:not(.itemActive):not(.itemDimmed) .itemArrow {
+    color: var(--text-pri);
+    opacity: 1;
+}
+
+.itemActive {
+    background: var(--signal-glow);
+}
+
+.itemActive::before {
+    transform: scaleY(1);
+}
+
+.itemActive .itemName {
+    color: var(--signal);
+    transform: translateX(4px);
+}
+
+.itemDimmed {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.itemNum {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-dim);
+    min-width: 28px;
+    letter-spacing: 0.06em;
+}
+
+.itemName {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-sec);
+    transition: color var(--transition), transform var(--transition);
+}
+
+.itemArrow {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    opacity: 0;
+    transition: color var(--transition), opacity var(--transition);
+}
+
+.itemLoading {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--signal);
+}
+
+/* Status row (loading state) */
+.statusRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 0;
+    color: var(--text-sec);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+}
+
+.statusDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--signal);
+    flex-shrink: 0;
+}
+
+.statusText {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* Error block */
+.errorBlock {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 16px;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    background: var(--fail-dim);
+    font-size: 13px;
+    color: var(--fail);
+    margin-top: 16px;
+}
+
+.errorIcon {
+    font-family: var(--mono);
+    font-weight: 700;
+    margin-top: 1px;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+}
+
+.footerMeta {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+}

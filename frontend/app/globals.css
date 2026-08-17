@@ -1,0 +1,125 @@
+/* ============================================================
+   AI Interview Assistant — Global Design System
+   Theme: Deep Neo-Grotesque Tech
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── CSS Reset ──────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+  --bg:           #000000;
+  --surface:      #121214;
+  --surface-2:    #1a1a1d;
+  --border:       #262629;
+  --border-hi:    #3a3a3f;
+  --text-pri:     #f0f0f0;
+  --text-sec:     #88889a;
+  --text-dim:     #4a4a55;
+
+  --signal:       #F59E0B;   /* amber — active states */
+  --signal-dim:   rgba(245, 158, 11, 0.12);
+  --signal-glow:  rgba(245, 158, 11, 0.06);
+
+  --pass:         #22C55E;   /* green — pass/correct */
+  --pass-dim:     rgba(34, 197, 94, 0.10);
+  --fail:         #EF4444;   /* red — fail/incorrect */
+  --fail-dim:     rgba(239, 68, 68, 0.10);
+
+  --mono:         'Geist Mono', 'Courier New', monospace;
+  --sans:         'Inter', system-ui, sans-serif;
+
+  --radius:       2px;
+  --transition:   150ms ease;
+}
+
+/* ── Base ────────────────────────────────────────────────────── */
+html {
+  height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  height: 100%;
+  background-color: var(--bg);
+  color: var(--text-pri);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+#__next, main {
+  height: 100%;
+}
+
+/* ── Typography ──────────────────────────────────────────────── */
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+code, kbd, pre, .mono {
+  font-family: var(--mono);
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 2px; }
+
+/* ── Keyframes ────────────────────────────────────────────────── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── Utility Classes ─────────────────────────────────────────── */
+.animate-slide-up {
+  animation: slideUp 120ms ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 150ms ease-out both;
+}
+
+.animate-pulse {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+/* ── Base Button Reset ─────────────────────────────────────────── */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+textarea, input {
+  font-family: inherit;
+  outline: none;
+}
