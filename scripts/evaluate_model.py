@@ -398,23 +398,32 @@ def section2_scoring_eval(static_only=False):
         if clean in ["i don't know", "i dont know", "dont know", "don't know",
                      "no idea", "pass", "skip", ""]:
             return 0
+        gibberish_phrases = [
+            "bleh blah blah",
+            "asdfghjkl",
+            "qwerty",
+            "x y z",
+            "nothing"]
+        
+        if any(phrase in clean for phrase in gibberish_phrases):
+          return 0
         if clean == reference.strip().lower() or reference.strip().lower() in clean:
             return 10
         if len(clean.split()) < 3:
             return 0
 
         prompt = (
-            f"You are a strict technical interviewer.\n\n"
-            f"Question: {question}\n"
-            f"Ideal Answer: {reference}\n"
-            f"Candidate Answer: {candidate}\n\n"
-            f"Evaluation Rubric:\n"
-            f"- 0 marks: gibberish, completely wrong, or empty.\n"
-            f"- 1 to 4 marks: vague, lacking detail, or mostly incorrect.\n"
-            f"- 5 to 7 marks: partially correct but missing key concepts.\n"
-            f"- 8 to 10 marks: conceptually accurate and complete.\n\n"
-            f"Score: "
-        )
+    f"You are a strict technical interviewer.\n\n"
+    f"Question: {question}\n"
+    f"Ideal Answer: {reference}\n"
+    f"Candidate Answer: {candidate}\n\n"
+    f"Evaluation Rubric:\n"
+    f"- 0 marks: gibberish, completely wrong, or empty.\n"
+    f"- 1 to 4 marks: vague, lacking detail, or mostly incorrect.\n"
+    f"- 5 to 7 marks: partially correct but missing key concepts.\n"
+    f"- 8 to 10 marks: conceptually accurate and complete.\n\n"
+    f"Score: "
+)
         inputs = tokenizer(prompt, return_tensors="pt")
         with torch.no_grad():
             outputs = model.generate(**inputs, max_new_tokens=5,
@@ -433,6 +442,8 @@ def section2_scoring_eval(static_only=False):
         score  = score_answer(q, ref, ans)
         lat_ms = (time.perf_counter() - t0) * 1000
         results.append({
+            "question"   : q,
+            "candidate"  : ans,
             "tier"       : tier,
             "expected_c" : TIER_EXPECTED[tier],
             "score"      : score,
@@ -448,6 +459,7 @@ def section2_scoring_eval(static_only=False):
     print()
 
     results_df = pd.DataFrame(results)
+
 
     # Chart 1: Score distribution by tier ─────────────────────────────────────
     fig, ax = plt.subplots(figsize=FIGSIZE)
