@@ -412,47 +412,47 @@ def section2_scoring_eval(static_only=False):
         if len(clean.split()) < 3:
             return 0
 
+        # Short, direct prompt — ends with "Score:" so 1.8B model outputs a bare digit reliably.
+        # Long XML/rubric prompts cause the model to output prose, making parsing unreliable.
         prompt = (
-            f"You are an expert Senior Staff Engineer and a friendly, empathetic technical interviewer. "
-            f"Your task is to evaluate a candidate's answer to an interview question.\n\n"
+            f"You are a strict technical interviewer grading a candidate.\n\n"
             f"Question: {question}\n"
-            f"Reference Answer: {reference}\n"
-            f"Candidate's Answer: {candidate}\n\n"
-            f"Instructions:\n"
-            f"1. First determine whether the candidate actually answered the specific question being asked.\n"
-            f"2. The answer must be relevant to the exact concept, class, algorithm, problem, or topic in the question.\n"
-            f"3. If the candidate discusses a different topic, do NOT give a high score, even if technically correct.\n"
-            f"4. A completely off-topic answer should normally receive 0-2 marks.\n"
-            f"5. If the answer is relevant, carefully evaluate the technical claims for factual correctness.\n"
-            f"6. A technically incorrect claim must reduce the score even if the answer is detailed or confident.\n"
-            f"7. Do NOT give 9-10 marks to an answer containing major factual misconceptions.\n"
-            f"8. Accept technically correct explanations using different wording, terminology, or examples.\n"
-            f"9. Do not award marks merely because the answer is long. Judge the technical content.\n\n"
-            f"Scoring:\n"
-            f"Evaluate using four dimensions and add them for the final score out of 10:\n"
-            f"   - Relevance: 0-2 marks. Does the answer directly address the specific question?\n"
-            f"   - Technical correctness: 0-4 marks. Are the important technical claims correct?\n"
-            f"   - Completeness: 0-2 marks. Does the answer cover the essential concepts?\n"
-            f"   - Clarity: 0-2 marks. Is the explanation clear and understandable?\n\n"
-            f"You MUST format your output EXACTLY using these XML tags:\n"
-            f"<feedback>Your 1-2 sentence conversational response to the candidate.</feedback>\n"
-            f"<score>Your integer score here</score>\n\n"
-            f"Output:\n"
+            f"Ideal Answer: {reference}\n"
+            f"Candidate Answer: {candidate}\n\n"
+            f"Rate the candidate answer from 0 to 10 using this rubric:\n"
+            f"0-3: wrong, gibberish, or completely off-topic\n"
+            f"4-7: partially correct but missing key concepts\n"
+            f"8-10: accurate, complete, and clearly explained\n\n"
+            f"Respond with ONLY a single integer (0-10). No explanation.\n"
+            f"Score:"
         )
         inputs = tokenizer(prompt, return_tensors="pt")
         with torch.no_grad():
-            outputs = model.generate(**inputs, max_new_tokens=150,
-                                     do_sample=False)
-        resp = tokenizer.decode(outputs[0][inputs.input_ids.shape[1]:],
-                                skip_special_tokens=True).strip()
-        # Parse XML <score> tag (matches production app.py format)
-        score_match = re.search(r'<score>\s*(\d+)\s*</score>', resp, re.IGNORECASE)
-        if score_match:
-            return min(max(int(score_match.group(1)), 0), 10)
-        # Fallback: bare number scan
-        nums = re.findall(r"\b(\d+)\b", resp)
-        if nums:
-            return min(max(int(nums[0]), 0), 10)
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=4,   # Only need 1-2 digits
+                do_sample=False,
+            )
+        resp = tokenizer.decode(
+            outputs[0][inputs.input_ids.shape[1]:],
+            skip_special_tokens=True,
+        ).strip()
+
+        # ── Multi-pattern parser ────────────────────────────────────────────
+        # 1. "Score: X" or "Score:X" anywhere in output
+        m = re.search(r'score\s*:?\s*(\d+)', resp, re.IGNORECASE)
+        if m:
+            return min(max(int(m.group(1)), 0), 10)
+        # 2. Find all numbers 0-10 in the output; prefer the last one
+        #    (models often say "I give it a 7" — the digit is at the end)
+        all_nums = [int(x) for x in re.findall(r'\b(\d+)\b', resp)
+                    if 0 <= int(x) <= 10]
+        if all_nums:
+            return all_nums[-1]   # Last number in 0-10 range
+        # 3. Any digit at all (may be >10 — clamp)
+        any_num = re.findall(r'\d+', resp)
+        if any_num:
+            return min(max(int(any_num[0]), 0), 10)
         return 0
 
     results = []
