@@ -413,27 +413,47 @@ def section2_scoring_eval(static_only=False):
             return 0
 
         prompt = (
-    f"You are a strict technical interviewer.\n\n"
-    f"Question: {question}\n"
-    f"Ideal Answer: {reference}\n"
-    f"Candidate Answer: {candidate}\n\n"
-    f"Evaluation Rubric:\n"
-    f"- 0 marks: gibberish, completely wrong, or empty.\n"
-    f"- 1 to 4 marks: vague, lacking detail, or mostly incorrect.\n"
-    f"- 5 to 7 marks: partially correct but missing key concepts.\n"
-    f"- 8 to 10 marks: conceptually accurate and complete.\n\n"
-    f"Score: "
-)
+            f"You are an expert Senior Staff Engineer and a friendly, empathetic technical interviewer. "
+            f"Your task is to evaluate a candidate's answer to an interview question.\n\n"
+            f"Question: {question}\n"
+            f"Reference Answer: {reference}\n"
+            f"Candidate's Answer: {candidate}\n\n"
+            f"Instructions:\n"
+            f"1. First determine whether the candidate actually answered the specific question being asked.\n"
+            f"2. The answer must be relevant to the exact concept, class, algorithm, problem, or topic in the question.\n"
+            f"3. If the candidate discusses a different topic, do NOT give a high score, even if technically correct.\n"
+            f"4. A completely off-topic answer should normally receive 0-2 marks.\n"
+            f"5. If the answer is relevant, carefully evaluate the technical claims for factual correctness.\n"
+            f"6. A technically incorrect claim must reduce the score even if the answer is detailed or confident.\n"
+            f"7. Do NOT give 9-10 marks to an answer containing major factual misconceptions.\n"
+            f"8. Accept technically correct explanations using different wording, terminology, or examples.\n"
+            f"9. Do not award marks merely because the answer is long. Judge the technical content.\n\n"
+            f"Scoring:\n"
+            f"Evaluate using four dimensions and add them for the final score out of 10:\n"
+            f"   - Relevance: 0-2 marks. Does the answer directly address the specific question?\n"
+            f"   - Technical correctness: 0-4 marks. Are the important technical claims correct?\n"
+            f"   - Completeness: 0-2 marks. Does the answer cover the essential concepts?\n"
+            f"   - Clarity: 0-2 marks. Is the explanation clear and understandable?\n\n"
+            f"You MUST format your output EXACTLY using these XML tags:\n"
+            f"<feedback>Your 1-2 sentence conversational response to the candidate.</feedback>\n"
+            f"<score>Your integer score here</score>\n\n"
+            f"Output:\n"
+        )
         inputs = tokenizer(prompt, return_tensors="pt")
         with torch.no_grad():
-            outputs = model.generate(**inputs, max_new_tokens=5,
-                                     do_sample=False, temperature=0.0)
+            outputs = model.generate(**inputs, max_new_tokens=150,
+                                     do_sample=False)
         resp = tokenizer.decode(outputs[0][inputs.input_ids.shape[1]:],
                                 skip_special_tokens=True).strip()
-        nums = re.findall(r"\b\d+\b", resp)
+        # Parse XML <score> tag (matches production app.py format)
+        score_match = re.search(r'<score>\s*(\d+)\s*</score>', resp, re.IGNORECASE)
+        if score_match:
+            return min(max(int(score_match.group(1)), 0), 10)
+        # Fallback: bare number scan
+        nums = re.findall(r"\b(\d+)\b", resp)
         if nums:
             return min(max(int(nums[0]), 0), 10)
-        return 7 if len(clean.split()) > 5 else 0
+        return 0
 
     results = []
     print("    Running 30 gold-standard cases ...")
